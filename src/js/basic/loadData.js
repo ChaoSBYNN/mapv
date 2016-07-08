@@ -19,14 +19,17 @@ class LoadData {
         dropbox.addEventListener("dragenter", dragenter, false);
         dropbox.addEventListener("dragover", dragover, false);
         dropbox.addEventListener("drop", drop, false);
+
         function dragenter(e) {
             e.stopPropagation();
             e.preventDefault();
         }
+
         function dragover(e) {
             e.stopPropagation();
             e.preventDefault();
         }
+
         function drop(e) {
             e.stopPropagation();
             e.preventDefault();
@@ -41,12 +44,12 @@ class LoadData {
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
                 var reader = new FileReader();
-                reader.onload = function (e) {
+                reader.onload = function(e) {
                     console.time('progress data')
                     var data = e.target.result;
                     // progress data
                     var dataByLine = data.split('\n');
-                    var dataByLineTable = dataByLine.map(function (item) {
+                    var dataByLineTable = dataByLine.map(function(item) {
                         return item.split('\t');
                     });
                     // scan data & clean data;
@@ -71,13 +74,12 @@ class LoadData {
                         }
                     }
                     // - filter 
-                    dataByLineTable.filter(function (value) {
-                        return value.length == dataMaxHited.value;
-                    })
-                    //
+                    dataByLineTable.filter(function(value) {
+                            return value.length == dataMaxHited.value;
+                        })
+                        //
                     self.options.addData && self.options.addData(dataByLineTable);
-
-                    console.timeEnd('progress data')
+                    console.timeEnd('progress data');
                 };
                 reader.readAsText(file);
             }

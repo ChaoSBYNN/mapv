@@ -45,14 +45,22 @@ class Nav extends React.Component {
                     activeId: data.layerId,
                     moduleShow: true,
                 });
+            } else if (data.type == 'addNewData') {
+                self.forceUpdate()
             }
         });
     }
 
-    changeValue(type) {
+    changeValue(name, type) {
         var activeId = this.state.activeId;
         var option = this.state.layers[activeId].option;
-        option[type] = this.refs[type].value;
+        if (type == 'checkbox') {
+            option[name] = !option[name];
+        } else {
+            option[name] = arguments[2].target.value
+        }
+
+
         this.setState({
             layers: this.state.layers
         });
@@ -65,7 +73,7 @@ class Nav extends React.Component {
         });
     }
 
-    getControl(type, options) {
+    getControl(name, options) {
         // console.log(type, options)
         var names = {
             fillStyle: {
@@ -123,13 +131,22 @@ class Nav extends React.Component {
                 min: 0.01,
                 max: 1,
                 step: 0.01,
-            }
+            },
+            withoutAlpha: {
+                name: '启用透明度',
+                type: 'checkbox'
+            },
+            absolute: {
+                name: '绝对热力',
+                type: 'checkbox'
+            },
 
         }
 
         var ipt;
-        if (names[type]) {
-            switch (names[type].type) {
+        if (names[name]) {
+            var type = names[name].type;
+            switch (type) {
                 case 'color':
                     var color = options;
                     var testRGBA = color.match(/rgba\((.+?),(.+?),(.+?),(.+?)\)/);
@@ -144,35 +161,46 @@ class Nav extends React.Component {
                     }
                     ipt = <input value={color}
                         type='color'
-                        onChange={this.changeValue.bind(this, type) }
-                        ref={type}/>;
+                        onChange={this.changeValue.bind(this, name, type) }
+                        ref={name}/>;
                     break;
                 case 'range':
-                    ipt = <input value={options}
+                    ipt = [<input value={options}
                         type='range'
-                        min={names[type].min}
-                        step={names[type].step}
-                        max={names[type].max}
-                        onChange={this.changeValue.bind(this, type) }
-                        ref={type}/>;
+                        min={names[name].min}
+                        step={names[name].step}
+                        max={names[name].max}
+                        onChange={this.changeValue.bind(this, name, type) }
+                        ref={name}/>,
+                        <input className="view" value={options}
+                            onChange={this.changeValue.bind(this, name, type) }
+                            type="text"/>
+                    ];
+                    break;
+                case 'checkbox':
+                    ipt = <input
+                        checked={options ? 'checked' : ''}
+                        type='checkbox'
+                        onChange={this.changeValue.bind(this, name, type) }
+                        ref={name}/>;
                     break;
                 case 'select':
                     var opts = names.draw.options.map(function (item, index) {
                         return <option key={"select_item_" + index} value={item}>{item}</option>
                     });
                     ipt = (
-                        <select onChange={this.changeValue.bind(this, type) } ref={type}>{opts}</select>
+                        <select onChange={this.changeValue.bind(this, name, type) } ref={name}>{opts}</select>
                     );
                     break;
             }
             return (
                 <div className="map-style-optiosblock"
-                    key={"options_" + type}>
-                    <span className="options-name">{names[type].name}</span>
+                    key={"options_" + name}>
+                    <span className="options-name">{names[name].name}</span>
                     {ipt}
                 </div>);
         } else {
-            console.warn(type, ' is not configed')
+            console.warn(name, ' is not configed')
             return '';
         }
 

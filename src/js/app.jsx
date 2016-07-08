@@ -8,13 +8,15 @@ import Layers from './pannel/layers.jsx';
 import Style from './pannel/style.jsx';
 import Datas from './pannel/datas.jsx';
 import Data from './basic/data';
+import Action from './basic/mavAction';
 import LoadData from './basic/loadData.js';
+import CenterZoom from './basic/centerZoom.js';
 
 
 class MyComponent extends React.Component {
     componentDidMount() {
         new LoadData({
-            addData: function (data) {;
+            addData: function (data) {
                 //let's image the data is string
                 var lineData = [];
                 for (var i in data) {
@@ -40,7 +42,12 @@ class MyComponent extends React.Component {
                         }
                     })
                 }
-                Data.set('新建数据', { data: lineData, type: 'line' });
+                Data.set({ data: lineData, type: 'line' });
+                Action.emit({
+                    data: {
+                        type: 'addNewData'
+                    }
+                });
             }
         });
     }

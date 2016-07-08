@@ -9,6 +9,7 @@ var citys = ["北京", "天津", "上海", "重庆", "石家庄", "太原", "呼
 
 class data {
     constructor() {
+        this.dataCount = 0;
         this.datas = {
             'point': function() {
                 var _data = [];
@@ -73,6 +74,10 @@ class data {
     };
 
     set(name, data) {
+        if (typeof name !== 'string') {
+            data = name;
+            name = '自定义数据' + (++this.dataCount);
+        }
         this.datas[name] = data
     }
 }

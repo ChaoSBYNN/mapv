@@ -299,6 +299,17 @@ body {
         text-align: right;
         margin-right: 10px;
     }
+    input {
+        vertical-align: middle;
+    }
+    .view {
+        width: 40px;
+        text-align: center;
+        border: none;
+        background: none;
+        color: #fff;
+        vertical-align: middle;
+    }
 }
 
 .map-style-dataTypes {
@@ -324,4 +335,5 @@ body {
             background: #535353;
         }
     }
+    
 }

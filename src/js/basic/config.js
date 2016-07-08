@@ -115,11 +115,11 @@ var config = {
                         0.25: "rgb(0,0,255)",
                         0.55: "rgb(0,255,0)",
                         0.85: "yellow",
-                        1.00: "rgb(255,0,0)"
+                        1.0: "rgb(255,0,0)"
                     },
-                    max: 30,
-                    strength: 0.3,
-                    // strokeStyle: 'rgba(0, 0, 0, 0.9)',
+                    max: 5000,
+                    withoutAlpha: true,
+                    absolute: true,
                     draw: 'heatmap'
                 }
             }
