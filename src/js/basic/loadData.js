@@ -74,10 +74,10 @@ class LoadData {
                         }
                     }
                     // - filter 
-                    dataByLineTable.filter(function(value) {
-                            return value.length == dataMaxHited.value;
-                        })
-                        //
+                    dataByLineTable = dataByLineTable.filter(function(value) {
+                        return value.length == dataMaxHited.value;
+                    });
+                    //
                     self.options.addData && self.options.addData(dataByLineTable);
                     console.timeEnd('progress data');
                 };

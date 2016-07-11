@@ -59,25 +59,35 @@ class data {
     get(name) {
         var _data = [];
         var type = null;
+        var retData = {};
         if (name == 'point' || name == 'line') {
-            _data = this.datas[name]();
-            type = name;
+            retData = {
+                data: this.datas[name](),
+                type: name
+            }
         } else {
-            _data = this.datas[name].data;
-            type = this.datas[name].type;
+            retData = this.datas[name];
         }
 
-        return {
-            data: _data,
-            type: type
-        };
+        return retData;
     };
 
     set(name, data) {
         if (typeof name !== 'string') {
             data = name;
-            name = '自定义数据' + (++this.dataCount);
+            name = '自定义数据-' + (++this.dataCount);
         }
+
+        var userData = {};
+        for (var i in data.data) {
+            var _userData = data.data[i].userData;
+            for (var j in _userData) {
+                userData[j] = userData[j] || [];
+                // TODO: is we need get the userData map
+                //  userData[j].push...
+            }
+        }
+        data.userData = userData;
         this.datas[name] = data
     }
 }

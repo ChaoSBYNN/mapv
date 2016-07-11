@@ -75,73 +75,7 @@ class Nav extends React.Component {
 
     getControl(name, options) {
         // console.log(type, options)
-        var names = {
-            fillStyle: {
-                name: '填充颜色',
-                type: 'color',
-            },
-            shadowColor: {
-                name: '阴影颜色',
-                type: 'color',
-            },
-            shadowBlur: {
-                name: '阴影模糊',
-                type: 'range',
-            },
-            size: {
-                name: '大小',
-                type: 'range'
-            },
-            // line
-            strokeStyle: {
-                name: '线条颜色',
-                type: 'color',
-            },
-            lineWidth: {
-                name: '线条宽度',
-                type: 'range'
-            },
-
-            maxSize: {
-                name: '最大半径',
-                type: 'range'
-            },
-            max: {
-                name: '最大阀值',
-                type: 'range'
-            },
-            radius: {
-                name: '半径',
-                type: 'range'
-            },
-            gridWidth: {
-                name: '网格宽度',
-                type: 'range'
-            },
-            globalAlpha: {
-                name: '全局透明度',
-                type: 'range',
-                min: 0.01,
-                max: 1,
-                step: 0.01,
-            },
-            strength: {
-                name: '强度',
-                type: 'range',
-                min: 0.01,
-                max: 1,
-                step: 0.01,
-            },
-            withoutAlpha: {
-                name: '启用透明度',
-                type: 'checkbox'
-            },
-            absolute: {
-                name: '绝对热力',
-                type: 'checkbox'
-            },
-
-        }
+        var names = Config.controlList;
 
         var ipt;
         if (names[name]) {
@@ -159,26 +93,28 @@ class Nav extends React.Component {
                         B = B.length <= 1 ? '0' + B : B;
                         color = '#' + R + G + B;
                     }
-                    ipt = <input value={color}
+                    ipt = <input key={'control_color'}
+                        value={color}
                         type='color'
                         onChange={this.changeValue.bind(this, name, type) }
                         ref={name}/>;
                     break;
                 case 'range':
-                    ipt = [<input value={options}
+                    ipt = [<input key={'control_range'}
+                        value={options}
                         type='range'
                         min={names[name].min}
                         step={names[name].step}
                         max={names[name].max}
                         onChange={this.changeValue.bind(this, name, type) }
                         ref={name}/>,
-                        <input className="view" value={options}
+                        <input key={'control_range_view'} className="view" value={options}
                             onChange={this.changeValue.bind(this, name, type) }
                             type="text"/>
                     ];
                     break;
                 case 'checkbox':
-                    ipt = <input
+                    ipt = <input key={'control_checkbox'}
                         checked={options ? 'checked' : ''}
                         type='checkbox'
                         onChange={this.changeValue.bind(this, name, type) }
@@ -189,7 +125,7 @@ class Nav extends React.Component {
                         return <option key={"select_item_" + index} value={item}>{item}</option>
                     });
                     ipt = (
-                        <select onChange={this.changeValue.bind(this, name, type) } ref={name}>{opts}</select>
+                        <select  key={'control_select'}  onChange={this.changeValue.bind(this, name, type) } ref={name}>{opts}</select>
                     );
                     break;
             }
@@ -257,11 +193,46 @@ class Nav extends React.Component {
         });
     }
 
+    filterData(fieldList, data, e) {
+        if (e.keyCode == 13) {
+            var keys = {};
+            for (var i in fieldList) {
+                var value = this.refs[i].value;
+                keys[i] = value == '' ? null : value.split(',');
+            }
+
+            var newData = { data: [] };
+            for (var i in data) {
+                if (i != 'data') newData[i] = data[i];
+            }
+
+            for (var i in data.data) {
+                var pass = true;
+                for (var j in keys) {
+                    pass = keys[j] ? keys[j].indexOf(data.data[i].userData[j]) != -1 : true;
+                    if (!pass) break;
+                };
+                pass && newData.data.push(data.data[i]);
+            }
+            var id = this.state.activeId;
+            var layers = this.state.layers;
+            Action.emit({
+                data: {
+                    type: 'layerChange',
+                    id: id,
+                    data: newData.data,
+                    option: layers[id].option
+                }
+            });
+        }
+    }
+
     render() {
+
         // options
         var options = [];
         var activeLayer = this.state.layers[this.state.activeId] || {};
-        // console.log(activeLayer.drawType)
+        var datas = activeLayer.dataName ? Data.get(activeLayer.dataName) : {};
 
         if (activeLayer) {
             var _options = activeLayer.option;
@@ -273,7 +244,6 @@ class Nav extends React.Component {
         // layer type
         var layerTypes = [];
         var dataType = activeLayer.dataType;
-
         for (var i in Config.drawType) {
             var types = Config.drawType[i];
             if (types.useData.indexOf(dataType) != -1) {
@@ -288,6 +258,7 @@ class Nav extends React.Component {
             }
         }
 
+        // data list
         var dataDom = [];
         var dataLists = Data.getList();
         var nameMaping = {
@@ -303,6 +274,22 @@ class Nav extends React.Component {
                     {nameMaping[dataName] ? nameMaping[dataName] : dataName}
                 </p>
             )
+        }
+
+        //data filter
+        var userDataList = [];
+        if (datas.userData) {
+            // console.log(datas.userData);
+            for (var i in datas.userData) {
+                userDataList.push(
+                    <div key={'userDataList_' + i} className="map-style-optiosblock">
+                        <span className="options-name">{i}</span>
+                        <input type="text"
+                            onKeyUp={this.filterData.bind(this, datas.userData, datas) }
+                            ref={i}/>
+                    </div>
+                )
+            }
         }
 
         return (
@@ -329,6 +316,13 @@ class Nav extends React.Component {
 
                 <div className="map-style-datablock"
                     style={{ display: (dataType ? '' : 'none') }}>
+
+                    <div className="map-style-datatitle"
+                        style={{ display: userDataList.length ? 'block' : 'none' }}>
+                        &#xe964; 数据过滤
+                    </div>
+                    {userDataList}
+
                     <div className="map-style-datatitle">&#xe9b8; 图层类型</div>
                     <div className="map-style-dataTypes">
                         {layerTypes}

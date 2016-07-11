@@ -187,6 +187,72 @@ var config = {
                 point: {}
             }
         },
+    },
+    controlList: {
+        fillStyle: {
+            name: '填充颜色',
+            type: 'color',
+        },
+        shadowColor: {
+            name: '阴影颜色',
+            type: 'color',
+        },
+        shadowBlur: {
+            name: '阴影模糊',
+            type: 'range',
+        },
+        size: {
+            name: '大小',
+            type: 'range'
+        },
+        // line
+        strokeStyle: {
+            name: '线条颜色',
+            type: 'color',
+        },
+        lineWidth: {
+            name: '线条宽度',
+            type: 'range'
+        },
+
+        maxSize: {
+            name: '最大半径',
+            type: 'range'
+        },
+        max: {
+            name: '最大阀值',
+            type: 'range'
+        },
+        radius: {
+            name: '半径',
+            type: 'range'
+        },
+        gridWidth: {
+            name: '网格宽度',
+            type: 'range'
+        },
+        globalAlpha: {
+            name: '全局透明度',
+            type: 'range',
+            min: 0.01,
+            max: 1,
+            step: 0.01,
+        },
+        strength: {
+            name: '强度',
+            type: 'range',
+            min: 0.01,
+            max: 1,
+            step: 0.01,
+        },
+        withoutAlpha: {
+            name: '启用透明度',
+            type: 'checkbox'
+        },
+        absolute: {
+            name: '绝对热力',
+            type: 'checkbox'
+        }
     }
 }
 

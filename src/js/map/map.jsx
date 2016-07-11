@@ -52,7 +52,7 @@ class Map extends React.Component {
                     }
                     // set option
                     if (data.option) {
-                        console.warn(data.option)
+                        // console.warn(data.option)
                         self.layers[data.id].mapvLayer.set({
                             options: data.option
                         });

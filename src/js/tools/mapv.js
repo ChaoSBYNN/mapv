@@ -1806,7 +1806,6 @@
   }
 
   function Layer(map, dataSet, options) {
-      console.warn(options)
       var self = this;
 
       self.init(options);
@@ -1959,7 +1958,7 @@
       var self = this;
 
       self.options = options;
-      console.warn('@@@@1', options)
+      // console.warn('@@@@1', options)
       self.intensity = new Intensity({
           maxSize: self.options.maxSize,
           gradient: self.options.gradient,
@@ -1995,7 +1994,6 @@
       var conf = {
           globalAlpha: 1,
           globalCompositeOperation: 'source-over',
-          webkitImageSmoothingEnabled: true,
           imageSmoothingEnabled: true,
           strokeStyle: '#000000',
           fillStyle: '#000000',
